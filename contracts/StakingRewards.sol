@@ -24,7 +24,7 @@ contract StakingRewards is
     IERC20 public stakingToken;
     uint256 public periodFinish = 0;
     uint256 public rewardRate = 0;
-    uint256 public rewardsDuration = 3 days;
+    uint256 public rewardsDuration = 7 days;
     uint256 public lastUpdateTime;
     uint256 public rewardPerTokenStored;
     uint256 public maximumStakingAmount = 10000000;
@@ -47,6 +47,13 @@ contract StakingRewards is
         rewardsToken = IERC20(_rewardsToken);
         stakingToken = IERC20(_stakingToken);
         rewardsDistribution = _rewardsDistribution;
+    }
+
+    function setRules(uint256 _rewardsDuration, uint256 _maximumStakingAmount)
+        public
+    {
+        rewardsDuration = _rewardsDuration;
+        maximumStakingAmount = _maximumStakingAmount;
     }
 
     /* ========== VIEWS ========== */
