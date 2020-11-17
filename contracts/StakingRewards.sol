@@ -27,7 +27,7 @@ contract StakingRewards is
     uint256 public rewardsDuration = 7 days;
     uint256 public lastUpdateTime;
     uint256 public rewardPerTokenStored;
-    uint256 public maximumStakingAmount = 10000000;
+    uint256 public maximumStakingAmount = 100000;
 
     mapping(address => uint256) public stakedTimes;
     mapping(address => uint256) public userRewardPerTokenPaid;
@@ -120,31 +120,6 @@ contract StakingRewards is
         emit Staked(msg.sender, amount);
     }
 
-    function withdraw(uint256 amount)
-        public
-        nonReentrant
-        updateReward(msg.sender)
-    {
-        require(amount > 0, "Cannot withdraw 0");
-        _totalSupply = _totalSupply.sub(amount);
-        _balances[msg.sender] = _balances[msg.sender].sub(amount);
-        stakingToken.safeTransfer(msg.sender, amount);
-
-        /* =========== CHECK EARLY UNSTAKING ========== */
-        if (block.timestamp.sub(stakedTimes[msg.sender]) < 7 days) {
-            uint256 paneltyAmount = rewards[msg.sender]
-                .mul(amount)
-                .div(_balances[msg.sender])
-                .mul(25)
-                .div(1e2);
-            rewards[msg.sender] = rewards[msg.sender].sub(paneltyAmount);
-            rewardRate = rewardRate.add(
-                paneltyAmount.div(periodFinish.sub(block.timestamp))
-            );
-        }
-        emit Withdrawn(msg.sender, amount);
-    }
-
     function withdrawAll() public nonReentrant updateReward(msg.sender) {
         uint256 amount = _balances[msg.sender];
         _totalSupply = _totalSupply.sub(amount);
@@ -176,7 +151,7 @@ contract StakingRewards is
     }
 
     function exit() external {
-        withdraw(_balances[msg.sender]);
+        withdrawAll();
         getReward();
     }
 

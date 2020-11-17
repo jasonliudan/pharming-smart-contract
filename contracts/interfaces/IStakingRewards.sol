@@ -1,6 +1,5 @@
 pragma solidity >=0.4.24;
 
-
 interface IStakingRewards {
     // Views
     function lastTimeRewardApplicable() external view returns (uint256);
@@ -19,7 +18,7 @@ interface IStakingRewards {
 
     function stake(uint256 amount) external;
 
-    function withdraw(uint256 amount) external;
+    function withdrawAll() external;
 
     function getReward() external;
 
